@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste sorties | {{ parent() }}{% endblock %}
+
+{% block body %}
+    <div class="div-form">
+        {{ form_start(sortieForm) }}
+        <div class="my-custom-class-for-errors">
+            {{ form_errors(sortieForm) }}
+        </div>
+        <br>
+        <h1>Filtrer les sorties</h1>
+        <hr>
+
+        <div class="my-custom-class-for-errors">
+            {{ form_errors(sortieForm) }}
+        </div>
+        {{ form_end(sortieForm) }}
+    </div>
+    <br>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nom de la sortie</th>
+                <th>Date et heure de début</th>
+                <th>Durée</th>
+                <th>Date limite d'inscription</th>
+                <th>Participants max.</th>
+                <th>Informations</th>
+                <th>Organisateur</th>
+                <th>État</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sortie in sorties %}
+            <tr>
+                <td data-label="Nom de la sortie">{{ sortie.nom }}</td>
+                {# TODO mettre la date en fr, filtre:   format_datetime('full', 'full', locale='fr') #}
+                <td data-label="Date et heure de début">{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('l d/m/Y à G:i') : '' }}</td>
+                <td data-label="Durée">{{ sortie.duree }}</td>
+                <td data-label="Date limite d'inscription">{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('l d/m/Y à G:i') : '' }}</td>
+                <td data-label="Participants max.">{{ sortie.nbInscriptionsMax }}</td>
+                <td data-label="Informations">{{ sortie.infosSortie }}</td>
+                <td data-label="Organisateur">{{ sortie.organisateur.pseudo }}</td>
+                <td data-label="État">{{ sortie.etat.libelle }}</td>
+                <td data-label="">
+
+                    <a class="btn btn-primary w-100 mb-2" href="{{ path('sortie_show', {'id': sortie.id}) }}">Afficher</a>
+                    {% if app.user and app.user.id == sortie.organisateur.id %}
+                        <a class="btn btn-primary w-100 mb-2" href="{{ path('sortie_edit', {'id': sortie.id}) }}">Modifier</a>
+                        <a class="btn btn-primary w-100 mb-2" href="{{ path('sortie_new', {'id': sortie.id}) }}">Publier</a>
+                        {% if 'Créée' == sortie.etat.libelle or 'Ouverte' == sortie.etat.libelle %}
+                            <a class="btn btn-primary w-100 mb-2" href="{{ path('sortie_annuler', {'id': sortie.id}) }}">Annuler</a>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if sortie.etat.libelle == 'Créée' or sortie.etat.libelle == 'Ouverte'
+                        or sortie.etat.libelle == 'En cours' %}
+                    {% if app.user and app.user.id != sortie.organisateur.id  %}
+                        {# Si la sortie ne contient aucune inscription #}
+                        {% if sortie.inscriptions.count == 0 %}
+                            <a class="btn btn-primary w-100 mb-2" href="{{ path('sortie_inscrire', {'id': sortie.id}) }}">S'inscrire</a><br>
+                        {% endif %}
+                        {% for inscription in sortie.inscriptions %}
+                            {# Si la sortie contient une inscription de l'utilisateur #}
+                            {% if app.user.id == inscription.participant.id  %}
+                                <a class="btn btn-primary w-100 mb-2" style="white-space: nowrap;" href="{{ path('sortie_desinscrire', {'id': sortie.id}) }}">Se désister</a>
+                            {% endif %}
+                            {# Si la sortie contient des inscription, mais aucune de l'utilisateur #}
+                            {% if app.user.id != inscription.participant.id and sortie.inscriptions.count > 0 %}
+                                <a class="btn btn-primary w-100 mb-2" href="{{ path('sortie_inscrire', {'id': sortie.id}) }}">S'inscrire</a><br>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+                    {% endif %}
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">Pas de résultat !</td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}

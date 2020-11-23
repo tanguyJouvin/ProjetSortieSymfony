@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ sortie.nom }} | {{ parent() }}{% endblock %}
+
+{% block body %}
+    <br>
+    <h1>Afficher une Sortie</h1>
+    <br>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Nom de la sortie : </th>
+                <td data-label="Nom de la sortie">{{ sortie.nom }}</td>
+            </tr>
+
+            <tr>
+                <th>Organisateur : </th>
+                <td data-label="Organisateur">{{ sortie.organisateur.pseudo }}</td>
+            </tr>
+
+            <tr>
+                <th>État : </th>
+                <td data-label="État">{{ sortie.etat.libelle }}</td>
+            </tr>
+
+            <tr>
+                <th>Date et heure de la sortie :</th>
+                <td data-label="Date et heure de la sortie">{{ sortie.dateHeureDebut | date("l d/m/Y à G:i") }}</td>
+            </tr>
+
+            <tr>
+                <th>Date limite d'inscription : </th>
+                <td data-label="Date limite d'inscription">{{ sortie.dateLimiteInscription | date("l d/m/Y à G:i") }}</td>
+            </tr>
+
+            <tr>
+                <th>Nombre d'inscrits : </th>
+                <td data-label="Nombre d'inscrits">{{ nbInscrit }} / {{ sortie.nbInscriptionsMax }}</td>
+            </tr>
+            <tr>
+                <th>Durée : </th>
+                <td data-label="Durée">{{ sortie.duree }} minutes</td>
+            </tr>
+
+            {% if sortie.infosSortie is not null %}
+            <tr>
+                <th>Informations : </th>
+                <td data-label="Informations">{{ sortie.infosSortie }}</td>
+            </tr>
+            {% endif %}
+
+
+            <tr>
+                <th>Campus : </th>
+                <td data-label="Campus">{{ sortie.campus.nom }}</td>
+            </tr>
+
+            <tr>
+                <th>Lieu : </th>
+                <td data-label="Lieu">{{ sortie.lieu.nom }}, {{ sortie.lieu.ville.nom }}</td>
+            </tr>
+
+            <tr>
+                <th>Rue : </th>
+                <td data-label="Rue">{{ sortie.lieu.rue }}</td>
+            </tr>
+
+
+            <tr>
+                <th>Code postal : </th>
+                <td data-label="Code postal">{{ sortie.lieu.ville.codePostal }}</td>
+            </tr>
+
+
+            <tr>
+                <th>Latitude : </th>
+                <td data-label="Latitude">{{ sortie.lieu.latitude }}</td>
+            </tr>
+
+
+            <tr>
+                <th>Longitude : </th>
+                <td data-label="Longitude">{{ sortie.lieu.longitude }}</td>
+            </tr>
+
+            {% if sortie.etat.libelle == 'Annulée' %}
+                <tr>
+                    <th>Motif d'annulation : </th>
+                    <td data-label="motif d'annulation">{{ sortie.motifAnnulation }}</td>
+                </tr>
+            {% endif %}
+
+            <table class="table">
+                <thead>
+                    <h4>Participant</h4>
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Nom</th>
+                        <th>Prenom</th>
+                        <th>Telephone</th>
+                        <th>Email</th>
+                        <th>Organisateur</th>
+                    </tr>
+
+                </thead>
+                    <tbody>
+                        {% for participant in participants %}
+                            <tr class="mb-0">
+                                <td data-label="Pseudo">{{ participant.pseudo }}</td>
+                                <td data-label="Nom">{{ participant.nom }}</td>
+                                <td data-label="Prenom">{{ participant.prenom }}</td>
+                                <td data-label="Telephone">{{ participant.telephone }}</td>
+                                <td data-label="Email">{{ participant.mail }}</td>
+                                <td data-label="Organisateur">{{ participant.id == sortie.organisateur.id ? 'Oui' : 'Non' }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+        </tbody>
+    </table>
+    <hr>
+    <div class="row">
+        <div class="d-inline-block mx-auto">
+
+            {% if peutSinscrire %}
+                <a href="{{ path('sortie_inscrire', {'id': sortie.id}) }}" class="btn btn-primary">S'inscrire</a>
+            {%  endif %}
+
+            {% if peutDesinscrire %}
+                <a href="{{ path('sortie_desinscrire', {'id': sortie.id}) }}" class="btn btn-primary">Se désinscrire</a>
+            {%  endif %}
+
+            {% if peutModifier %}
+                <a href="{{ path('sortie_edit', {'id': sortie.id}) }}" class="btn btn-primary">Modifier</a>
+                <a href="{{ path('sortie_delete', {'id': sortie.id}) }}" class="btn btn-primary">Supprimer</a>
+            {% endif %}
+
+            {% if peutAnnuler %}
+                <a href="{{ path('sortie_annuler', {'id': sortie.id}) }}" class="btn btn-warning">Annuler</a>
+            {% endif %}
+
+            {% if peutPublier  %}
+                <a href="{{ path('sortie_publier',  {'id': sortie.id }) }}" class="btn btn-primary">Publier</a>
+            {% endif %}
+
+            <a href="{{ path('sortie_index') }}" class="btn btn-secondary mx-auto">Retour à la liste</a>
+        </div>
+
+    </div>
+    <br>
+    <br>
+{% endblock %}

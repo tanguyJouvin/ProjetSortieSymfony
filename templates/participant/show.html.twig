@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Participant{% endblock %}
+
+{% block body %}
+    <br>
+    <h1>Profil de <strong>{{ participant.pseudo }}</strong></h1>
+    <br>
+    <div class="row">
+        <div class="col-lg-4 col-sm-12">
+            <img width="100%" src="{{ participant.urlPhoto ? asset('uploads/imageProfil/' ~ participant.urlPhoto) :  asset('uploads/default.jpg')}}" alt="Photo de profil">
+        </div>
+        <div class="col-lg-8 col-sm-12">
+            <table class="table">
+                <tbody>
+        {#            <tr>#}
+        {#                <th>Id</th>#}
+        {#                <td>{{ participant.id }}</td>#}
+        {#            </tr>#}
+        {#            <tr>#}
+        {#                <th>Roles</th>#}
+        {#                <td>{{ participant.roles ? participant.roles|json_encode : '' }}</td>#}
+        {#            </tr>#}
+        {#            <tr>#}
+        {#                <th>Password</th>#}
+        {#                <td>{{ participant.password }}</td>#}
+        {#            </tr>#}
+                    <tr class="mb-0">
+                        <th>Pseudo</th>
+                        <td data-label="Pseudo">{{ participant.pseudo }}</td>
+                    </tr>
+                    <tr class="mb-0">
+                        <th>Nom</th>
+                        <td data-label="Nom">{{ participant.nom }}</td>
+                    </tr>
+                    <tr class="mb-0">
+                        <th>Prenom</th>
+                        <td data-label="Prenom">{{ participant.prenom }}</td>
+                    </tr>
+                    <tr class="mb-0">
+                        <th>Telephone</th>
+                        <td data-label="Telephone">{{ participant.telephone }}</td>
+                    </tr>
+                    <tr class="mb-0">
+                        <th>Email</th>
+                        <td data-label="Email">{{ participant.mail }}</td>
+                    </tr>
+                    <tr class="mb-0">
+                        <th>Administrateur</th>
+                        <td data-label="Administrateur">{{ participant.administrateur ? 'Oui' : 'Non' }}</td>
+                    </tr>
+                    <tr class="mb-0">
+                        <th>Actif</th>
+                        <td data-label="Actif">{{ participant.actif ? 'Oui' : 'Non' }}</td>
+                    </tr>
+{#                    <tr>#}
+{#                        <th>UrlPhoto</th>#}
+{#                        <td>{{ participant.urlPhoto }}</td>#}
+{#                    </tr>#}
+{#                    <tr>#}
+{#                        <th>Photo de profil</th>#}
+{#                        <td>#}
+{#                            <img src="{{ asset('uploads/imageProfil/' ~ participant.urlPhoto) }}" alt="Photo de profil">#}
+{#                        </td>#}
+{#                    </tr>#}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% if app.user.id ==  participant.id %}
+        <div class="row">
+            <a href="{{ path('/profil/editer') }}" class="btn btn-primary m-auto">Modifier</a>
+        </div>
+    {% endif %}
+
+    <br>
+    <br>
+{#    <a href="{{ path('participant_index') }}">back to list</a>#}
+
+{#    <a href="{{ path('participant_edit', {'id': participant.id}) }}">edit</a>#}
+
+{#    {{ include('participant/_delete_form.html.twig') }}#}
+{% endblock %}

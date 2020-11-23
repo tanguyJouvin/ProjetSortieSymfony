@@ -1,0 +1,18 @@
+{{ form_start(form) }}
+
+    {{ form_row(form.nom) }}
+    {{ form_row(form.dateHeureDebut) }}
+    {{ form_row(form.dateLimiteInscription) }}
+    {{ form_row(form.duree) }}
+    {{ form_row(form.nbInscriptionsMax) }}
+    {{ form_row(form.infosSortie) }}
+
+    {{ form_row(form.formLieu.ville) }}
+    {{ form_row(form.lieu) }}
+    {{ form_row(form.formLieu.ajouter) }}
+    {{ form_row(form.formLieu.rue) }}
+    {{ form_row(form.formLieu.latitude) }}
+    {{ form_row(form.formLieu.longitude) }}
+
+    <button class="btn btn-success">{{ button_label|default('Mettre à jour') }}</button>
+{{ form_end(form) }}
